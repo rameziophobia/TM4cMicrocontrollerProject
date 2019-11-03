@@ -1,31 +1,8 @@
 #include "tm4c123gh6pm.h"
 #include "sevenSeg.h"
 
-#define PORTA_INPUT_PINS 0xF0
-#define PORTD_OUTPUT_PINS 0x0F
-
-// void portd_init(void)
-// {
-//     SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R3;
-//     //dummy loop
-//     while (!(SYSCTL_RCGCGPIO_R & SYSCTL_RCGCGPIO_R3))
-//     {
-//     }
-//     GPIO_PORTD_DEN_R |= (PORTD_OUTPUT_PINS);
-//     GPIO_PORTD_DIR_R |= PORTD_OUTPUT_PINS;
-//     GPIO_PORTD_ODR_R |= PORTD_OUTPUT_PINS;
-// }
-// void porta_init(void)
-// {
-//     SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R0;
-//     //dummy loop
-//     while (!(SYSCTL_RCGCGPIO_R & SYSCTL_RCGCGPIO_R0))
-//     {
-//     }
-//     GPIO_PORTA_DEN_R |= PORTA_INPUT_PINS;
-//     GPIO_PORTA_DIR_R &= ~PORTA_INPUT_PINS;
-//     GPIO_PORTA_PUR_R |= PORTA_INPUT_PINS;
-// }
+#define PORTE_INPUT_PINS 0x0F
+#define PORTA_OUTPUT_PINS 0xF0
 
 void porta_init(void) //port for rows->output
 {
@@ -34,21 +11,22 @@ void porta_init(void) //port for rows->output
     while (!(SYSCTL_PRGPIO_R & SYSCTL_RCGCGPIO_R0))
     {
     }
-    GPIO_PORTA_DEN_R |= 0xF0; // -> 1111 1111 // enables second 4 pins
-    GPIO_PORTA_DIR_R |= 0xF0;
-    GPIO_PORTA_DATA_R = 0x0;
-    GPIO_PORTA_ODR_R = 0xF0;
+    GPIO_PORTA_DEN_R |= PORTA_OUTPUT_PINS; // enables second 4 pins
+    GPIO_PORTA_DIR_R |= PORTA_OUTPUT_PINS;
+    GPIO_PORTA_DATA_R = 0;
+    GPIO_PORTA_ODR_R = PORTA_OUTPUT_PINS;
 }
-void porte_init(void) //coulmns input
+
+void porte_init(void) //coulmns->input
 {
     SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R4;
     //dummy loop
     while (!(SYSCTL_PRGPIO_R & SYSCTL_RCGCGPIO_R4))
     {
     }
-    GPIO_PORTE_DEN_R |= 0x0F; // -> 1111 1111 // enables all rows and columns
-    GPIO_PORTE_DIR_R &= ~0xF; // -> 0000 1111 // sets the dir of rows' pins and columns' pins
-    GPIO_PORTE_PUR_R |= 0x0F;
+    GPIO_PORTE_DEN_R |= PORTE_INPUT_PINS;  // enables first 4 pins
+    GPIO_PORTE_DIR_R &= ~PORTE_INPUT_PINS;
+    GPIO_PORTE_PUR_R |= PORTE_INPUT_PINS;
 }
 
 const int numIndex[4][4] =
