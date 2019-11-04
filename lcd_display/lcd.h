@@ -1,8 +1,11 @@
-#ifndef LCD_H
-#define LCD_H
-void cmd_write( char cmd);
-void LCD_DataWrite(char dat);
-void LCD_start(unsigned char command);
+#ifndef LCD_UTIL
+#define LCD_UTIL
+
+#define Ports
+#include "stdint.h"
+
+void lcdInit(void);
 void LCD_data(unsigned char data);
-void LCD_command(unsigned char command);
-#endif LCD_H
+void LCD_word(char * word, uint8_t size);
+
+#endif //LCD_UTIL
