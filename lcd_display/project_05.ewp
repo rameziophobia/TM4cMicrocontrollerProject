@@ -2110,18 +2110,6 @@
         <name>$PROJ_DIR$\builtinswitchutil.h</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\ezTivaLib\ez123G.h</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\ezTivaLib\ezDefines.h</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\ezTivaLib\ezLCD.h</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\ezTivaLib\ezTimer.h</name>
-    </file>
-    <file>
         <name>$PROJ_DIR$\lcd.c</name>
     </file>
     <file>
