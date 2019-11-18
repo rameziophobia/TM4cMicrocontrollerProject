@@ -106,6 +106,11 @@ void LCD_start(void)
     LCD_command(LCD_COMMAND_DISPLAY_ON);
 }
 
+void lcd_clear(void)
+{
+    LCD_command(LCD_COMMAND_CLEAR);
+}
+
 void lcdInit()
 {
     initDataPort();

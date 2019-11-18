@@ -1,7 +1,7 @@
 #include "tm4c123gh6pm.h"
-#include "sevenSeg.h"
+#include "systicktimerutil.h"
 
-#define PORTE_INPUT_PINS 0x0F
+#define PORTC_INPUT_PINS 0xF0
 #define PORTA_OUTPUT_PINS 0xF0
 
 void porta_init(void) //port for rows->output
@@ -17,16 +17,22 @@ void porta_init(void) //port for rows->output
     GPIO_PORTA_ODR_R = PORTA_OUTPUT_PINS;
 }
 
-void porte_init(void) //coulmns->input
+void portc_init(void) //coulmns->input
 {
-    SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R4;
+    SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R2;
     //dummy loop
-    while (!(SYSCTL_PRGPIO_R & SYSCTL_RCGCGPIO_R4))
+    while (!(SYSCTL_PRGPIO_R & SYSCTL_RCGCGPIO_R2))
     {
     }
-    GPIO_PORTE_DEN_R |= PORTE_INPUT_PINS;  // enables first 4 pins
-    GPIO_PORTE_DIR_R &= ~PORTE_INPUT_PINS;
-    GPIO_PORTE_PUR_R |= PORTE_INPUT_PINS;
+    GPIO_PORTC_DEN_R |= PORTC_INPUT_PINS;  // enables second 4 pins
+    GPIO_PORTC_DIR_R &= ~PORTC_INPUT_PINS;
+    GPIO_PORTC_PUR_R |= PORTC_INPUT_PINS;
+}
+
+void keypad_setup(void)
+{
+    porta_init();
+    portc_init();
 }
 
 const int numIndex[4][4] =
@@ -41,21 +47,21 @@ int ReadKeypad(void)
     for (int i = 0; i < 4; i++)
     {
         GPIO_PORTA_DATA_R = ~(0x10 << i);
-        waitForDelay();
+        waitForDelay(600*1000 *10);
 
-        if (!(GPIO_PORTE_DATA_R & 0x01))
+        if (!(GPIO_PORTC_DATA_R & 0x10))
         {
             return (numIndex[i][0]);
         }
-        if (!(GPIO_PORTE_DATA_R & 0x02))
+        if (!(GPIO_PORTC_DATA_R & 0x20))
         {
             return (numIndex[i][1]);
         }
-        if (!(GPIO_PORTE_DATA_R & 0x04))
+        if (!(GPIO_PORTC_DATA_R & 0x40))
         {
             return (numIndex[i][2]);
         }
-        if (!(GPIO_PORTE_DATA_R & 0x08))
+        if (!(GPIO_PORTC_DATA_R & 0x80))
         {
             return (numIndex[i][3]);
         }

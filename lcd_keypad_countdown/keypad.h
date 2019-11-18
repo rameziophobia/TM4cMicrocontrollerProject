@@ -1,8 +1,7 @@
 #ifndef keypad
 #define keypad
 
-void porte_init(void);
-void porta_init(void);
+void keypad_setup(void);
 int ReadKeypad(void);
 
 #endif
