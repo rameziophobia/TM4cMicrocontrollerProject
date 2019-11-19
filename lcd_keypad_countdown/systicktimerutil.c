@@ -1,4 +1,3 @@
-
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 
@@ -19,4 +18,14 @@ void waitForDelay(int32_t delay_in_ns)
     NVIC_ST_CURRENT_R = calculateDelay(delay_in_ns);
     while (!(NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT))
         ;
+}
+
+void startDelayNonBlocking(int32_t delay_in_ns)
+{
+    NVIC_ST_CURRENT_R = calculateDelay(delay_in_ns);
+}
+
+int delayNotDone(void)
+{
+    return !(NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT);
 }

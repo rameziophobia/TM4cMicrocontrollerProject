@@ -10,32 +10,38 @@ void init(){
   systickTimerInit(COUNTDOWN_DELAY);
 }
 
-int currentNum = -1;
-void loop(){
+int currentNum = 0;
+
+void loop()
+{
+  startDelayNonBlocking(COUNTDOWN_DELAY * 3);
   while (1)
   {
-    int keyRead = ReadKeypad();
-    if (keyRead != -1)
+    if (delayNotDone())
     {
-      currentNum = keyRead;
-    }
-    if (currentNum != -1)
+      int keyRead = ReadKeypad();
+      if (keyRead != -1)
+      {
+        currentNum = currentNum * 10 + keyRead;
+        startDelayNonBlocking(COUNTDOWN_DELAY * 3);
+      }}
+    else
     {
-        char my_char;
+      if (currentNum != -1)
+      {
         int tempCurrentNum = currentNum;
         lcd_clear();
         while(tempCurrentNum != 0){
-          my_char = '0' + (char)(tempCurrentNum %10);
+          char my_char = '0' + (char)(tempCurrentNum %10);
           LCD_data(my_char);
           tempCurrentNum /= 10;
         }
         waitForDelay(COUNTDOWN_DELAY);
-        currentNum--; //todo clear
+        currentNum--;
+      }
     }
   }
 }
-
-
 
 int main()
 {
