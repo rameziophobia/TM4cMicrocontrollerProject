@@ -1,32 +1,51 @@
 #include "tm4c123gh6pm.h"
 #include "systicktimerutil.h"
 
-#define PORTC_INPUT_PINS 0xF0
-#define PORTA_OUTPUT_PINS 0xF0
+#define INPUT_COLUMNS_PINS 0xF0
+#define OUTPUT_ROWS_PINS 0xF0
+
+#define KEYPAD_ROWS_CLK SYSCTL_RCGCGPIO_R0
+#define KEYPAD_ROWS_DIR GPIO_PORTA_DIR_R
+#define KEYPAD_ROWS_DEN GPIO_PORTA_DEN_R
+#define KEYPAD_ROWS_DATA GPIO_PORTA_DATA_R
+#define KEYPAD_ROWS_ODR GPIO_PORTA_ODR_R
+
+#define KEYPAD_COLUMNS_CLK SYSCTL_RCGCGPIO_R2
+#define KEYPAD_COLUMNS_DIR GPIO_PORTC_DIR_R
+#define KEYPAD_COLUMNS_DEN GPIO_PORTC_DEN_R
+#define KEYPAD_COLUMNS_DATA GPIO_PORTC_DATA_R
+#define KEYPAD_COLUMNS_PUR GPIO_PORTC_PUR_R
+
+#define ROW_PIN_0 0x10
+
+#define COLUMN_PIN_0 0x10
+#define COLUMN_PIN_1 0x20
+#define COLUMN_PIN_2 0x40
+#define COLUMN_PIN_3 0x80
 
 void porta_init(void) //port for rows->output
 {
-    SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R0;
+    SYSCTL_RCGCGPIO_R |= KEYPAD_ROWS_CLK;
     //dummy loop
-    while (!(SYSCTL_PRGPIO_R & SYSCTL_RCGCGPIO_R0))
+    while (!(SYSCTL_PRGPIO_R & KEYPAD_ROWS_CLK))
     {
     }
-    GPIO_PORTA_DEN_R |= PORTA_OUTPUT_PINS; // enables second 4 pins
-    GPIO_PORTA_DIR_R |= PORTA_OUTPUT_PINS;
-    GPIO_PORTA_DATA_R = 0;
-    GPIO_PORTA_ODR_R = PORTA_OUTPUT_PINS;
+    KEYPAD_ROWS_DEN |= OUTPUT_ROWS_PINS; // enables second 4 pins
+    KEYPAD_ROWS_DIR |= OUTPUT_ROWS_PINS;
+    KEYPAD_ROWS_DATA = 0;
+    KEYPAD_ROWS_ODR = OUTPUT_ROWS_PINS;
 }
 
 void portc_init(void) //coulmns->input
 {
-    SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R2;
+    SYSCTL_RCGCGPIO_R |= KEYPAD_COLUMNS_CLK;
     //dummy loop
-    while (!(SYSCTL_PRGPIO_R & SYSCTL_RCGCGPIO_R2))
+    while (!(SYSCTL_PRGPIO_R & KEYPAD_COLUMNS_CLK))
     {
     }
-    GPIO_PORTC_DEN_R |= PORTC_INPUT_PINS;  // enables second 4 pins
-    GPIO_PORTC_DIR_R &= ~PORTC_INPUT_PINS;
-    GPIO_PORTC_PUR_R |= PORTC_INPUT_PINS;
+    KEYPAD_COLUMNS_DEN |= INPUT_COLUMNS_PINS;  // enables second 4 pins
+    KEYPAD_COLUMNS_DIR &= ~INPUT_COLUMNS_PINS;
+    KEYPAD_COLUMNS_PUR |= INPUT_COLUMNS_PINS;
 }
 
 void keypad_setup(void)
@@ -46,22 +65,22 @@ int ReadKeypad(void)
 {
     for (int i = 0; i < 4; i++)
     {
-        GPIO_PORTA_DATA_R = ~(0x10 << i);
-        waitForDelay(600*1000 *10);
+        KEYPAD_ROWS_DATA = ~(ROW_PIN_0 << i);
+        waitForDelay(600*1000*10);
 
-        if (!(GPIO_PORTC_DATA_R & 0x10))
+        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_0))
         {
             return (numIndex[i][0]);
         }
-        if (!(GPIO_PORTC_DATA_R & 0x20))
+        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_1))
         {
             return (numIndex[i][1]);
         }
-        if (!(GPIO_PORTC_DATA_R & 0x40))
+        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_2))
         {
             return (numIndex[i][2]);
         }
-        if (!(GPIO_PORTC_DATA_R & 0x80))
+        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_3))
         {
             return (numIndex[i][3]);
         }
