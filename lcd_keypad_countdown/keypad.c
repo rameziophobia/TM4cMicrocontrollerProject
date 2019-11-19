@@ -7,19 +7,21 @@
 #define ROW_PIN_0 0x10
 #define COLUMN_PIN_0 0x10
 
+// Port A
 #define KEYPAD_ROWS_CLK SYSCTL_RCGCGPIO_R0
 #define KEYPAD_ROWS_DIR GPIO_PORTA_DIR_R
 #define KEYPAD_ROWS_DEN GPIO_PORTA_DEN_R
 #define KEYPAD_ROWS_DATA GPIO_PORTA_DATA_R
 #define KEYPAD_ROWS_ODR GPIO_PORTA_ODR_R
 
+// Port C
 #define KEYPAD_COLUMNS_CLK SYSCTL_RCGCGPIO_R2
 #define KEYPAD_COLUMNS_DIR GPIO_PORTC_DIR_R
 #define KEYPAD_COLUMNS_DEN GPIO_PORTC_DEN_R
 #define KEYPAD_COLUMNS_DATA GPIO_PORTC_DATA_R
 #define KEYPAD_COLUMNS_PUR GPIO_PORTC_PUR_R
 
-void porta_init(void) //port for rows->output
+void rowPort_init(void) //port for rows->output
 {
     SYSCTL_RCGCGPIO_R |= KEYPAD_ROWS_CLK;
     //dummy loop
@@ -32,7 +34,7 @@ void porta_init(void) //port for rows->output
     KEYPAD_ROWS_ODR = OUTPUT_ROWS_PINS;
 }
 
-void portc_init(void) //coulmns->input
+void columnPort_init(void) //coulmns->input
 {
     SYSCTL_RCGCGPIO_R |= KEYPAD_COLUMNS_CLK;
     //dummy loop
@@ -46,8 +48,8 @@ void portc_init(void) //coulmns->input
 
 void keypad_setup(void)
 {
-    porta_init();
-    portc_init();
+    rowPort_init();
+    columnPort_init();
 }
 
 const int numIndex[4][4] =
