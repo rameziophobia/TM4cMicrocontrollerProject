@@ -7,7 +7,7 @@
 void init(){
   keypad_setup();
   lcdInit();
-  systickTimerInit(COUNTDOWN_DELAY);
+  //systickTimerInit(); //already called in lcdInit()
 }
 
 int currentNum = 0;

@@ -130,6 +130,6 @@ void lcdInit()
 {
     initDataPort();
     initCtrlPort();
-    systickTimerInit(100000000); //todo :( im not sad im just drawn this way :(((
+    systickTimerInit(); //todo :( im not sad im just drawn this way :(((
     LCD_start();
 }
