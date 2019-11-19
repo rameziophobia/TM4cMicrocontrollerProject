@@ -13,11 +13,21 @@ void systickTimerInit(int64_t delay_in_ns)
     NVIC_ST_CTRL_R = NVIC_ST_CTRL_CLK_SRC | NVIC_ST_CTRL_ENABLE;
 }
 
-void waitForDelay(int32_t delay_in_ns)
+void waitForDelay(int64_t delay_in_ns)
 {
     NVIC_ST_CURRENT_R = calculateDelay(delay_in_ns);
     while (!(NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT))
         ;
+}
+
+void delayMs(int64_t delay_in_ms)
+{
+    waitForDelay(delay_in_ms * 1000000);
+}
+
+void delayUs(int64_t delay_in_us)
+{
+    waitForDelay(delay_in_us * 1000);
 }
 
 void startDelayNonBlocking(int32_t delay_in_ns)

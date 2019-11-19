@@ -27,15 +27,6 @@
 #define LCD_CTRL_DATA GPIO_PORTE_DATA_R
 #define LCD_DATA_DATA GPIO_PORTB_DATA_R
 
-void delayMs(int64_t delayAmount)
-{
-    waitForDelay(delayAmount * 1000000);
-}
-
-void delayUs(int64_t delayAmount)
-{
-    waitForDelay(delayAmount * 1000);
-}
 
 void LCD_command(unsigned char command)
 {

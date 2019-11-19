@@ -7,6 +7,8 @@
 
 void systickTimerInit(int64_t delay_in_ns);
 void waitForDelay(int64_t delay_in_ns);
+void delayMs(int64_t delay_in_ms);
+void delayUs(int64_t delay_in_us);
 int delayNotDone(void);
 void startDelayNonBlocking(int32_t delay_in_ns);
 
