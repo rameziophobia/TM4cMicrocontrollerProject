@@ -4,6 +4,9 @@
 #define INPUT_COLUMNS_PINS 0xF0
 #define OUTPUT_ROWS_PINS 0xF0
 
+#define ROW_PIN_0 0x10
+#define COLUMN_PIN_0 0x10
+
 #define KEYPAD_ROWS_CLK SYSCTL_RCGCGPIO_R0
 #define KEYPAD_ROWS_DIR GPIO_PORTA_DIR_R
 #define KEYPAD_ROWS_DEN GPIO_PORTA_DEN_R
@@ -15,13 +18,6 @@
 #define KEYPAD_COLUMNS_DEN GPIO_PORTC_DEN_R
 #define KEYPAD_COLUMNS_DATA GPIO_PORTC_DATA_R
 #define KEYPAD_COLUMNS_PUR GPIO_PORTC_PUR_R
-
-#define ROW_PIN_0 0x10
-
-#define COLUMN_PIN_0 0x10
-#define COLUMN_PIN_1 0x20
-#define COLUMN_PIN_2 0x40
-#define COLUMN_PIN_3 0x80
 
 void porta_init(void) //port for rows->output
 {
@@ -63,27 +59,27 @@ const int numIndex[4][4] =
 
 int ReadKeypad(void)
 {
-    for (int i = 0; i < 4; i++)
+    for (int row = 0; row < 4; row++)
     {
-        KEYPAD_ROWS_DATA = ~(ROW_PIN_0 << i);
+        KEYPAD_ROWS_DATA = ~(ROW_PIN_0 << row);
         waitForDelay(600*1000*10);
-
-        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_0))
-        {
-            return (numIndex[i][0]);
-        }
-        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_1))
-        {
-            return (numIndex[i][1]);
-        }
-        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_2))
-        {
-            return (numIndex[i][2]);
-        }
-        if (!(KEYPAD_COLUMNS_DATA & COLUMN_PIN_3))
-        {
-            return (numIndex[i][3]);
-        }
+        return check_column(row);
     }
     return (-1);
+}
+
+int check_column(int row)
+{
+    for (int column = 0; column < 4; column++)
+    {
+        return isKeyPressed(row, column);
+    }
+}
+
+int isKeyPressed(int row, int column)
+{
+    if (!(KEYPAD_COLUMNS_DATA & (COLUMN_PIN_0 << column)))
+    {
+        return (numIndex[row][column]);
+    }
 }
