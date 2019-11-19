@@ -27,6 +27,8 @@
 #define LCD_CTRL_DATA GPIO_PORTE_DATA_R
 #define LCD_DATA_DATA GPIO_PORTB_DATA_R
 
+int inverseNum(int num);
+void lcd_displayDigit(int digit);
 
 void LCD_command(unsigned char command)
 {
@@ -104,7 +106,7 @@ void lcd_clear(void)
 
 void lcd_displayNum(int num)
 {
-    num = inverseNum(num)
+    num = inverseNum(num);
     while(num != 0){
         lcd_displayDigit(num % 10);
         num /= 10;
