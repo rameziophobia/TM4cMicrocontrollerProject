@@ -24,18 +24,14 @@ void loop()
       {
         currentNum = currentNum * 10 + keyRead;
         startDelayNonBlocking(COUNTDOWN_DELAY * 3);
-      }}
+      }
+    }
     else
     {
       if (currentNum != -1)
       {
-        int tempCurrentNum = currentNum;
-        lcd_clear();
-        while(tempCurrentNum != 0){
-          char my_char = '0' + (char)(tempCurrentNum %10);
-          LCD_data(my_char);
-          tempCurrentNum /= 10;
-        }
+        lcd_clear(); 
+        lcd_displayNum(currentNum);
         waitForDelay(COUNTDOWN_DELAY);
         currentNum--;
       }

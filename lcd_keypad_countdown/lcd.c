@@ -102,6 +102,30 @@ void lcd_clear(void)
     LCD_command(LCD_COMMAND_CLEAR);
 }
 
+void lcd_displayNum(int num)
+{
+    num = inverseNum(num)
+    while(num != 0){
+        lcd_displayDigit(num % 10);
+        num /= 10;
+    }
+}
+
+void lcd_displayDigit(int digit)
+{
+    char my_char = '0' + (char)(digit);
+    LCD_data(my_char);
+}
+
+int inverseNum(int num)
+{
+    int temp = 0;
+    while(num != 0){
+        temp += temp * 10 + num % 10;
+        num /= 10;
+    }
+    return temp;
+}
 void lcdInit()
 {
     initDataPort();
