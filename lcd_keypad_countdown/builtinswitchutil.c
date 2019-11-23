@@ -1,9 +1,11 @@
 #include "tm4c123gh6pm.h"
+#include "builtinswitchutil.h"
 
 #define sw1 1U << 4
 #define sw2 1U
+#define NULL 0
 
-void portf_init(void)
+void builtin_switch_init(void)
 {
     SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R5;
     //dummy loop
@@ -26,4 +28,47 @@ int isSw1Pressed()
 int isSw2Pressed()
 {
     return !(GPIO_PORTF_DATA_R & sw2);
+}
+
+void (* sw1OnPress)(void) = NULL;
+void (* sw2OnPress)(void) = NULL;
+void (* sw12OnPress)(void) = NULL;
+
+PressedSwitch pressedSwitch;
+void do_builtin_switch_functions(void)
+{
+    pressedSwitch = GPIO_PORTF_DATA_R & (sw1 | sw2);
+    switch (pressedSwitch)
+    {
+        case switch_1_pressed:
+            if(sw1OnPress != NULL)
+                (* sw1OnPress)();
+            break;
+        case switch_2_pressed:
+            if(sw2OnPress != NULL)
+                (* sw1OnPress)();
+            break;
+        case switch_12_pressed:
+            if(sw12OnPress != NULL)
+                (* sw12OnPress)();
+            break;
+        default:
+        break;
+    }
+}
+
+
+void set_sw1_function(void (* func)(void))
+{
+    sw1OnPress = func;
+}
+
+void set_sw2_function(void (* func)(void))
+{
+    sw2OnPress = func;
+}
+
+void set_sw12_function(void (* func)(void))
+{
+    sw12OnPress = func;
 }

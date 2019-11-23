@@ -21,6 +21,9 @@
 #define KEYPAD_COLUMNS_DATA GPIO_PORTC_DATA_R
 #define KEYPAD_COLUMNS_PUR GPIO_PORTC_PUR_R
 
+int check_column(int row);
+int isKeyPressed(int row, int column);
+
 void rowPort_init(void) //port for rows->output
 {
     SYSCTL_RCGCGPIO_R |= KEYPAD_ROWS_CLK;
@@ -65,7 +68,13 @@ int ReadKeypad(void)
     {
         KEYPAD_ROWS_DATA = ~(ROW_PIN_0 << row);
         waitForDelay(600*1000*10);
-        return check_column(row);
+        // delayMs(200);
+        
+        int pressed_key = check_column(row);
+        if (pressed_key != -1)
+        {
+          return pressed_key;
+        }
     }
     return (-1);
 }
@@ -74,8 +83,13 @@ int check_column(int row)
 {
     for (int column = 0; column < 4; column++)
     {
-        return isKeyPressed(row, column);
+        int pressed_key = isKeyPressed(row, column);
+        if (pressed_key != -1)
+        {
+          return pressed_key;
+        }
     }
+    return -1;
 }
 
 int isKeyPressed(int row, int column)
@@ -84,4 +98,5 @@ int isKeyPressed(int row, int column)
     {
         return (numIndex[row][column]);
     }
+    return -1;
 }

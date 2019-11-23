@@ -10,5 +10,7 @@ void LCD_word(char * word, uint8_t size);
 void lcd_clear(void);
 void lcd_displayNum(int num);
 void lcd_displayDigit(int digit);
+void lcd_displayIntAsFloat(int num);
+void lcd_cursor_first_line(void);
 
 #endif //LCD_UTIL

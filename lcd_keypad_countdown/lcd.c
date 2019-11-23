@@ -27,21 +27,12 @@
 #define LCD_CTRL_DATA GPIO_PORTE_DATA_R
 #define LCD_DATA_DATA GPIO_PORTB_DATA_R
 
+#define DISPLAY_FLOAT_PRECISION 100
+#define DISPLAY_FLOAT_SCALE 100
+
 int inverseNum(int num);
 void lcd_displayDigit(int digit);
-
-void LCD_command(unsigned char command)
-{
-    LCD_CTRL_DATA = LCD_CTRL_ZERO;
-    LCD_DATA_DATA = command;
-    LCD_CTRL_DATA = LCD_EN; /* pulse E */
-    delayUs(1);             /* Enable pulse Width */
-    LCD_CTRL_DATA = LCD_CTRL_ZERO;
-    if (command > LCD_COMMAND_RETURN_CURSOR)
-        delayUs(40); /* all others 40 us */
-    else
-        delayMs(2); /* command 1 and 2 needs up to 1.64ms */
-}
+void LCD_command(unsigned char command);
 
 void LCD_data(unsigned char data)
 {
@@ -99,9 +90,27 @@ void LCD_start(void)
     LCD_command(LCD_COMMAND_DISPLAY_ON);
 }
 
+void LCD_command(unsigned char command)
+{
+    LCD_CTRL_DATA = LCD_CTRL_ZERO;
+    LCD_DATA_DATA = command;
+    LCD_CTRL_DATA = LCD_EN; /* pulse E */
+    delayUs(1);             /* Enable pulse Width */
+    LCD_CTRL_DATA = LCD_CTRL_ZERO;
+    if (command > LCD_COMMAND_RETURN_CURSOR)
+        delayUs(40); /* all others 40 us */
+    else
+        delayMs(2); /* command 1 and 2 needs up to 1.64ms */
+}
+
 void lcd_clear(void)
 {
     LCD_command(LCD_COMMAND_CLEAR);
+}
+
+void lcd_cursor_first_line(void)
+{
+    LCD_command(LCD_COMMAND_CURSOR_FIRST_LINE);
 }
 
 void lcd_displayNum(int num)
@@ -111,6 +120,13 @@ void lcd_displayNum(int num)
         lcd_displayDigit(num % 10);
         num /= 10;
     }
+}
+
+void lcd_displayIntAsFloat(int num)
+{
+    lcd_displayNum(num / DISPLAY_FLOAT_PRECISION);
+    LCD_data('.');
+    lcd_displayNum(num % DISPLAY_FLOAT_SCALE);
 }
 
 void lcd_displayDigit(int digit)
@@ -123,7 +139,7 @@ int inverseNum(int num)
 {
     int temp = 0;
     while(num != 0){
-        temp += temp * 10 + num % 10;
+        temp = temp * 10 + num % 10;
         num /= 10;
     }
     return temp;

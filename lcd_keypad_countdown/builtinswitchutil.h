@@ -12,8 +12,14 @@ typedef enum
 
 }PressedSwitch;
 
-void portf_init(void);
+void builtin_switch_init(void);
 int isSw1Pressed();
 int isSw2Pressed();
+
+void do_builtin_switch_functions(void);
+
+void set_sw1_function(void (* func)(void));
+void set_sw2_function(void (* func)(void));
+void set_sw12_function(void (* func)(void));
 
 #endif // BUILT_IN_SWITCH_UTIL
