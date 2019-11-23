@@ -36,7 +36,7 @@ void init()
   lcd_display_on_cursor_off();
   //systickTimerInit(); //already called in lcdInit()
   
-  lcd_displayIntAsFloat(0);
+  lcd_displayIntAsFloat(0, 2);
 }
 
 int currentNum = 0;
@@ -61,7 +61,7 @@ void loop()
       {
         //lcd_clear();
         lcd_cursor_first_line();
-        lcd_displayIntAsFloat(currentNum);
+        lcd_displayIntAsFloat(currentNum * 100, 2);
       }
     }
   }
@@ -69,7 +69,9 @@ void loop()
 
 void start_countdown()
 {
-  //not bounce protected
+  // todo is it now debounce protected ? 
+  currentNum = currentNum * 100;
+  delayMs(117);
   isCountingDown = True;
 }
 
@@ -78,7 +80,7 @@ void countdown()
   if (currentNum >= 0)
   {
     lcd_cursor_first_line();
-    lcd_displayIntAsFloat(currentNum);
+    lcd_displayIntAsFloat(currentNum, 2);
     delayMs(10);
     currentNum-=1;
   }
@@ -88,7 +90,7 @@ void countdown()
     currentNum = 0;
     //lcd_clear();
     lcd_cursor_first_line();
-    lcd_displayIntAsFloat(currentNum);
+    lcd_displayIntAsFloat(currentNum, 2);
     //todo toggle red led
   }
 }
@@ -106,10 +108,10 @@ void readNumber()
 
 void abort_countdown()
 {
-  //not bounce protected
+  // ! not debounce protected
   isCountingDown = False;
   currentNum=0;
   //lcd_clear();
   lcd_cursor_first_line();
-  lcd_displayIntAsFloat(currentNum);
+  lcd_displayIntAsFloat(currentNum, 2);
 }
