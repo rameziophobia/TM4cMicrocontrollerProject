@@ -90,9 +90,28 @@ void countdown()
     lcd_cursor_first_line();
     lcd_displayIntAsFloat(currentNum);
     //todo toggle red led
+    blink();
+   
   }
 }
-
+void blink()
+{
+   int volatile i=4;
+   while(i!=0)
+   {
+     rgb_display_color(LED_RED);
+     delayMs(500);
+     if(isSw2Pressed())
+     {
+       i=0;
+       rgb_display_color(LED_DARK);
+     }
+     else
+        rgb_display_color(LED_DARK);
+       delayMs(500);
+       i--;
+   }
+}
 void readNumber()
 {
   int keyRead = ReadKeypad();
