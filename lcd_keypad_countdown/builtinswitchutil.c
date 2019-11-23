@@ -46,7 +46,7 @@ void do_builtin_switch_functions(void)
             break;
         case switch_2_pressed:
             if(sw2OnPress != NULL)
-                (* sw1OnPress)();
+                (* sw2OnPress)();
             break;
         case switch_12_pressed:
             if(sw12OnPress != NULL)

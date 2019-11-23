@@ -3,15 +3,16 @@
 
 #include "systicktimerutil.h"
 
-#define LCD_COMMAND_CLEAR 0x1               // Clear display screen
-#define LCD_COMMAND_RETURN_CURSOR 0x2       // Return cursor home
-#define LCD_COMMAND_INC_CURSOR 0x6          // Increment cursor (shift cursor to right)
-#define LCD_COMMAND_DISPLAY_ON 0xF          // Display on, cursor blinking
-#define LCD_COMMAND_CURSOR_FIRST_LINE 0x80  // Force cursor to beginning of 1st line
-#define LCD_COMMAND_CURSOR_SECOND_LINE 0xC0 // Force cursor to beginning of 2nd line
-#define LCD_COMMAND_8_BIT 0x38              // 2 lines and 5x7 character (8-bit data, D0 to D7)
-#define LCD_COMMAND_4_BIT 0x28              // 2 lines and 5x7 character (4-bit data, D4 to D7)
-#define LCD_COMMAND_WAKEUP 0x30             // wakeup
+#define LCD_COMMAND_CLEAR 0x1                   // Clear display screen
+#define LCD_COMMAND_RETURN_CURSOR 0x2           // Return cursor home
+#define LCD_COMMAND_INC_CURSOR 0x6              // Increment cursor (shift cursor to right)
+#define LCD_COMMAND_DISPLAY_ON 0xF              // Display on, cursor blinking
+#define LCD_COMMAND_DISPLAY_ON_CURSOR_OFF 0xC   // Display on, cursor off
+#define LCD_COMMAND_CURSOR_FIRST_LINE 0x80      // Force cursor to beginning of 1st line
+#define LCD_COMMAND_CURSOR_SECOND_LINE 0xC0     // Force cursor to beginning of 2nd line
+#define LCD_COMMAND_8_BIT 0x38                  // 2 lines and 5x7 character (8-bit data, D0 to D7)
+#define LCD_COMMAND_4_BIT 0x28                  // 2 lines and 5x7 character (4-bit data, D4 to D7)
+#define LCD_COMMAND_WAKEUP 0x30                 // wakeup
 
 #define LCD_CTRL_ZERO 0
 #define LCD_RS 0x1 // 0000
@@ -98,7 +99,7 @@ void LCD_command(unsigned char command)
     delayUs(1);             /* Enable pulse Width */
     LCD_CTRL_DATA = LCD_CTRL_ZERO;
     if (command > LCD_COMMAND_RETURN_CURSOR)
-        delayUs(40); /* all others 40 us */
+        delayUs(50); /* all others 50 us */
     else
         delayMs(2); /* command 1 and 2 needs up to 1.64ms */
 }
@@ -113,20 +114,31 @@ void lcd_cursor_first_line(void)
     LCD_command(LCD_COMMAND_CURSOR_FIRST_LINE);
 }
 
-void lcd_displayNum(int num)
+void lcd_display_on_cursor_off(void)
 {
-    num = inverseNum(num);
-    while(num != 0){
+    LCD_command(LCD_COMMAND_DISPLAY_ON_CURSOR_OFF);
+}
+
+void lcd_displayNum(int num, int numOfDigits)
+{
+    
+    if(num < 10){
+      lcd_displayDigit(0);
+      lcd_displayDigit(num);
+    }else{
+      num = inverseNum(num);
+      for(int i = 0; i < numOfDigits; i++){
         lcd_displayDigit(num % 10);
         num /= 10;
+      }
     }
 }
 
 void lcd_displayIntAsFloat(int num)
 {
-    lcd_displayNum(num / DISPLAY_FLOAT_PRECISION);
+    lcd_displayNum(num / DISPLAY_FLOAT_PRECISION, 2);
     LCD_data('.');
-    lcd_displayNum(num % DISPLAY_FLOAT_SCALE);
+    lcd_displayNum(num % DISPLAY_FLOAT_SCALE, 2);
 }
 
 void lcd_displayDigit(int digit)

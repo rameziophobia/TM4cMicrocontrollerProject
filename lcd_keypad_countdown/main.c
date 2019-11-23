@@ -33,9 +33,10 @@ void init()
   rgb_init();
   set_sw1_function(&start_countdown);
   set_sw2_function(&abort_countdown);
+  lcd_display_on_cursor_off();
   //systickTimerInit(); //already called in lcdInit()
   
-  // ! lcd_displayIntAsFloat(0);
+  lcd_displayIntAsFloat(0);
 }
 
 int currentNum = 0;
@@ -68,6 +69,7 @@ void loop()
 
 void start_countdown()
 {
+  //not bounce protected
   isCountingDown = True;
 }
 
@@ -77,14 +79,16 @@ void countdown()
   {
     lcd_cursor_first_line();
     lcd_displayIntAsFloat(currentNum);
-    delayMs(100);
-    currentNum-=10;
+    delayMs(10);
+    currentNum-=1;
   }
   else
   {
     isCountingDown = False;
     currentNum = 0;
-    lcd_clear();
+    //lcd_clear();
+    lcd_cursor_first_line();
+    lcd_displayIntAsFloat(currentNum);
     //todo toggle red led
   }
 }
@@ -102,5 +106,10 @@ void readNumber()
 
 void abort_countdown()
 {
+  //not bounce protected
   isCountingDown = False;
+  currentNum=0;
+  //lcd_clear();
+  lcd_cursor_first_line();
+  lcd_displayIntAsFloat(currentNum);
 }
