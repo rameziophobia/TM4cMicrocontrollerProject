@@ -7,14 +7,18 @@ int32_t calculateDelay(int64_t delay_in_ns){
 
 void systickTimerInit(void)
 {
+    NVIC_ST_CTRL_R = 0;
     NVIC_ST_RELOAD_R = calculateDelay(10000);
     NVIC_ST_CTRL_R = NVIC_ST_CTRL_CLK_SRC | NVIC_ST_CTRL_ENABLE;
 }
 
 void waitForDelay(int64_t delay_in_ns)
 {
+    NVIC_ST_CTRL_R = 0;
     int64_t temp = calculateDelay(delay_in_ns);
     NVIC_ST_RELOAD_R = temp;
+    NVIC_ST_CURRENT_R = temp;
+    NVIC_ST_CTRL_R = NVIC_ST_CTRL_CLK_SRC | NVIC_ST_CTRL_ENABLE;
     while (!(NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT))
         ;
 }

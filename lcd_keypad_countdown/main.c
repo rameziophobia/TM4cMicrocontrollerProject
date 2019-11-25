@@ -15,6 +15,8 @@ void abort_countdown(void);
 void countdown(void);
 void readNumber();
 
+void blink();
+
 void init(void);
 void loop(void);
 
@@ -35,7 +37,7 @@ void init()
   set_sw2_function(&abort_countdown);
   lcd_display_on_cursor_off();
   //systickTimerInit(); //already called in lcdInit()
-  
+
   lcd_displayIntAsFloat(0);
 }
 
@@ -80,7 +82,7 @@ void countdown()
     lcd_cursor_first_line();
     lcd_displayIntAsFloat(currentNum);
     delayMs(10);
-    currentNum-=1;
+    currentNum -= 1;
   }
   else
   {
@@ -91,26 +93,23 @@ void countdown()
     lcd_displayIntAsFloat(currentNum);
     //todo toggle red led
     blink();
-   
   }
 }
 void blink()
 {
-   int volatile i=4;
-   while(i!=0)
-   {
-     rgb_display_color(LED_RED);
-     delayMs(500);
-     if(isSw2Pressed())
-     {
-       i=0;
-       rgb_display_color(LED_DARK);
-     }
-     else
-        rgb_display_color(LED_DARK);
-       delayMs(500);
-       i--;
-   }
+  int volatile i = 5;
+  while (i > 0)
+  {
+    rgb_display_color(LED_RED);
+    delayMs(500);
+    rgb_display_color(LED_DARK);
+    delayMs(500);
+    i--;
+    if (isSw2Pressed())
+    {
+      i = 0;
+    }
+  }
 }
 void readNumber()
 {
@@ -127,7 +126,7 @@ void abort_countdown()
 {
   //not bounce protected
   isCountingDown = False;
-  currentNum=0;
+  currentNum = 0;
   //lcd_clear();
   lcd_cursor_first_line();
   lcd_displayIntAsFloat(currentNum);
