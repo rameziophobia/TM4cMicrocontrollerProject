@@ -2125,16 +2125,16 @@
         <name>$PROJ_DIR$\main.c</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\oneshotutil.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\oneshotutil.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\rgb_led.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\rgb_led.h</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\systicktimerutil.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\systicktimerutil.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\tm4c123gh6pm.h</name>

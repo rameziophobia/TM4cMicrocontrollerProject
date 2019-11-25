@@ -1,7 +1,7 @@
 #include "tm4c123gh6pm.h"
 #include <stdint.h>
-
-#include "systicktimerutil.h"
+#include "oneshotutil.h"
+//#include "systicktimerutil.h"
 
 #define LCD_COMMAND_CLEAR 0x1                   // Clear display screen
 #define LCD_COMMAND_RETURN_CURSOR 0x2           // Return cursor home
@@ -160,6 +160,6 @@ void lcdInit()
 {
     initDataPort();
     initCtrlPort();
-    systickTimerInit(); //todo :( im not sad im just drawn this way :(((
+    oneshotTimerInit(); //todo :( im not sad im just drawn this way :(((
     LCD_start();
 }
