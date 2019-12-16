@@ -28,7 +28,21 @@ int main()
   loop();
   return 0;
 }
-
+void capture_Init(void)
+{
+  SYSCTL_RCGCTIMER_R |=1;
+  TIMER0_PP_R|=0xf;
+  GPIO_PORTF_AFSEL_R|=0x01;
+  GPIO_PORTF_PCTL_R&=~0x0000000F;
+  GPIO_PORTF_PCTL_R|=0x00000007;
+  TIMER0_CTL_R &=~1;
+  TIMER0_CFG_R=0;
+  TIMER0_TAMR_R=0x17;
+  TIMER0_TAMATCHR_R=0xFFFFFFF;
+  TIMER0_CTL_R &=~8;
+  TIMER0_CTL_R |=4;
+  TIMER0_CTL_R |=1;
+}
 void init()
 {
   systickTimerInit();
@@ -38,6 +52,7 @@ void init()
   set_sw1_function(&startCounting);
   set_sw2_function(&stopCounting);
   lcd_display_on_cursor_off();
+  capture_Init();
   //periodicInterruptInit(&onPeriodicInterrupt, 16000 * 1000 - 1);
   //EnableInterrupts();
 
@@ -71,6 +86,9 @@ void loop_body()
 {
   while(1)
   {
+     int past=TIMER0_TAV_R;
+  int count=0;
+  TIMER0_ICR_R=4;
     int64_t delay = 1000000000; //1 sec
     NVIC_ST_CTRL_R = 0;
     int64_t temp = calculateDelay2(delay);
@@ -83,7 +101,9 @@ void loop_body()
         switch (GPIO_PORTF_DATA_R & 0x11)
         {
             case 1U << 4:
-                    //stop = 1;
+                    LCD_data('.');
+                    uint32_t float_num2 = TIMER0_TAV_R;
+                    lcd_displayNumZeroPadded(float_num2% 10000, 5);
                     return;
                 break;
             default:
